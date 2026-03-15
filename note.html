@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Note For You</title>
+    <style>
+        :root {
+            --bg-color: #fffdf0;
+            --text-brown: #422006;
+            --accent-yellow: #fde047;
+        }
+
+        body {
+            font-family: 'Georgia', serif; /* More of a classic letter feel */
+            background-color: var(--bg-color);
+            color: var(--text-brown);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .letter-container {
+            max-width: 600px;
+            background: white;
+            padding: 40px;
+            border-radius: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.1);
+            position: relative;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: fadeInLetter 1.5s forwards;
+        }
+
+        /* Decorative "Paper" effect */
+        .letter-container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: linear-gradient(#f1f1f1 1px, transparent 1px);
+            background-size: 100% 2em;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .message-content {
+            position: relative;
+            z-index: 1;
+            white-space: pre-wrap; /* Keeps your spacing/line breaks */
+        }
+
+        .heart-divider {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            color: #ef4444;
+        }
+
+        .next-btn {
+            display: block;
+            margin: 40px auto 0 auto;
+            background-color: var(--text-brown);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 1s forwards 4s; /* Appears after she finishes reading */
+        }
+
+        .next-btn:hover {
+            transform: scale(1.05);
+            background-color: #5d2d0a;
+        }
+
+        @keyframes fadeInLetter {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .letter-container { padding: 25px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="letter-container">
+        <div class="heart-divider">💌</div>
+        
+        <div class="message-content">
+"Idk what future have in store for us. But all i know is i want you in mine. 
+
+I wanna hear your stories, see you smile everyday, get your blessings every now and then 😁, laugh together.... i wanna do lots of things.. together. 
+
+I wanna get to know you . All of you. All the little things about you. 
+
+Thank you so much for being in my life dee. You're the best thing that's happened to me in a long time. I know we agreed to think about things after NEET but i just have to say this..."
+        </div>
+
+        <div class="heart-divider">✨</div>
+
+        <button class="next-btn" onclick="nextPage()">
+            Click me... if you're ready
+        </button>
+    </div>
+
+    <script>
+        function nextPage() {
+            // This will go to page 4
+            window.location.href = "love.html";
+        }
+    </script>
+</body>
+</html>

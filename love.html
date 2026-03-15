@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <style>
+        :root {
+            --bg-yellow: #fde047;
+            --text-brown: #422006;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-yellow);
+            color: var(--text-brown);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .final-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* The image you created */
+        .created-image {
+            max-width: 90%;
+            width: 500px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            border: 10px solid white;
+            
+            /* Entrance Animation */
+            opacity: 0;
+            transform: scale(0.9);
+            animation: finalReveal 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-top: 30px;
+            letter-spacing: -2px;
+            
+            /* Entrance Animation */
+            opacity: 0;
+            animation: fadeInText 2s forwards 1s;
+        }
+
+        /* Floating Hearts Background */
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            user-select: none;
+            z-index: -1;
+            animation: float 4s infinite linear;
+        }
+
+        @keyframes finalReveal {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInText {
+            to { opacity: 1; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="final-container">
+        <img src="pics/Untitled design.png" alt="A special creation for you" class="created-image">
+        
+        <h1>I love you <img src="pics/heart-icon.png" height="70px" width="70px" alt="heart" class="custom-heart-img">.</h1>
+    </div>
+
+    <script>
+        // Background floating hearts effect
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        // Create hearts every 500ms
+        setInterval(createHeart, 500);
+    </script>
+</body>
+</html>

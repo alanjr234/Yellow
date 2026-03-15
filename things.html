@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sunshine List</title>
+    <style>
+        :root {
+            --bg-color: #fffdf0;
+            --accent-yellow: #fde047;
+            --text-brown: #422006;
+            --modal-bg: rgba(66, 32, 6, 0.4);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-brown);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .page-layout {
+            display: flex;
+            max-width: 1000px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* --- LEFT SIDE: FIXED PHOTO --- */
+        .photo-sidebar {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .her-photo {
+            width: 90%;
+            max-width: 350px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(253, 224, 71, 0.4);
+            border: 8px solid white;
+        }
+
+        /* --- RIGHT SIDE: SCROLLABLE LIST --- */
+        .scrollable-content {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #ca8a04;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--accent-yellow);
+            font-size: 1.1rem;
+            font-weight: 500;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: slideIn 0.6s forwards;
+            opacity: 0;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(253, 224, 71, 0.3);
+        }
+
+        /* --- NEXT BUTTON STYLING --- */
+        .next-btn {
+            background-color: var(--text-brown);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 40px;
+            margin-bottom: 60px;
+            transition: transform 0.2s, background 0.3s;
+            box-shadow: 0 10px 20px rgba(66, 32, 6, 0.2);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            background-color: #5d2d0a;
+        }
+
+        /* --- MODAL (POPUP) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--modal-bg);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 400px;
+            width: 80%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            background: var(--accent-yellow);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .page-layout { flex-direction: column; }
+            .photo-sidebar { position: relative; height: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-layout">
+        <div class="photo-sidebar">
+            <img src="pics/She.jpg" alt="My Sunshine" class="her-photo">
+            <p style="margin-top: 20px; font-weight: bold; color: #ca8a04;">My Pretty Ladyy ☀️</p>
+        </div>
+
+        <div class="scrollable-content">
+            <h1>Things I love about you... ✨</h1>
+            
+            <div id="cardContainer"></div>
+
+            <button class="next-btn" onclick="nextSurprise()">
+                Next →
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 id="modalTitle" style="color: #ca8a04;"></h3>
+            <p id="modalText" style="line-height: 1.6;"></p>
+            <button class="close-btn" onclick="closeModal()">Close ❤️</button>
+        </div>
+    </div>
+
+    <script>
+        const reasons = [
+            { title: "Purest heart ❤️", text: "I've never met anyone as genuine as you. You have purest of hearts " },
+            { title: "Remembers everything 🧠", text: "The way you remember every tiny details. Like the very first message i sent you on chatib. Like howww do you remember that??just howw gooood is your memory??" },
+            { title: "Sweetesttt 💕", text: "You have this way of making even the worst days feel okay just by being you. Everything else vanishes when i talk to you" },
+            { title: "Prettyyyyyyy 😍", text: "I mean...just look at the photo on the left." },
+            { title: "Caring 🫂", text: "Not just towards me ..you care for everyone you love,cares about your academics and your dreams " },
+            { title: "Makes time for me 🥹", text: "You always makes time for me. Even if it means lying to your mom so that you get a little bit of time for me . " },
+            { title: "Smile 🫠", text: "Only the prettiest smile ever!!Makes me fucking melt ." },
+            { title: "Did i mention Beautiful? ✨", text: "Literal fucking Goddess 🛐" },
+            { title: "Certified yapper 💯", text: "I could listen to you talk about absolutely anything for hours. Never stop. You're a great story teller which is a quality i lack lol" },
+            { title: "Gives me notes 📝", text: "Those little notes 💕🤌" },
+            { title: "Inspires me 🌟", text: "Your presence alone makes me wanna do better. Idk whether it is to impress you or not but i genuinely feel like i should do more. " },
+            { title: "Likes my ugly ahh 😭", text: "This is the biggest mystery of the universe, but I'm not complaining!" }
+        ];
+
+        const container = document.getElementById('cardContainer');
+        const overlay = document.getElementById('modalOverlay');
+        const mTitle = document.getElementById('modalTitle');
+        const mText = document.getElementById('modalText');
+
+        reasons.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.innerText = item.title;
+            card.onclick = () => openModal(item.title, item.text);
+            container.appendChild(card);
+        });
+
+        function openModal(title, text) {
+            mTitle.innerText = title;
+            mText.innerText = text;
+            overlay.style.display = 'flex';
+        }
+
+        function closeModal() {
+            overlay.style.display = 'none';
+        }
+
+        function nextSurprise() {
+            // For now, we'll point to page3.html
+            window.location.href = "note.html";
+        }
+    </script>
+</body>
+</html>

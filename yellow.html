@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're My Yellow</title>
+    <style>
+        :root {
+            --bg-color: #fffdf0;
+            --primary-yellow: #fde047;
+            --dark-yellow: #ca8a04;
+            --text-color: #422006;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(253, 224, 71, 0.3);
+        }
+
+        h1 { font-size: 2.2rem; margin-bottom: 10px; color: var(--dark-yellow); }
+        
+        .definition {
+            font-style: italic;
+            line-height: 1.6;
+            background: #fefce8;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px dashed var(--primary-yellow);
+        }
+
+        .list-section { text-align: left; }
+
+        ul { list-style: none; padding: 0; }
+
+        li {
+            background: #fff;
+            border: 2px solid var(--primary-yellow);
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .delete-btn:hover { opacity: 1; color: #ef4444; }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus { border-color: var(--primary-yellow); }
+
+        .add-btn {
+            background-color: var(--primary-yellow);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0px #eab308;
+        }
+
+        .add-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0px #eab308;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>You're my yellow ☀️</h1>
+        
+        <div class="definition">
+            <strong>Yellow Person (n.):</strong> Someone who makes your life brighter just by being in it. They are your sunshine on a rainy day, the person who makes you feel safe, happy, and completely at home.
+        </div>
+        <strong>Yellow list:</strong>
+        <div class="list-section">
+            <ul id="yellowList">
+                </ul>
+
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="Add a yellow..." onkeypress="handleKey(event)">
+                <button class="add-btn" onclick="addName()">Add</button>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <p id="hintText" style="color: #ca8a04; font-weight: bold; min-height: 1.2em; margin-bottom: 10px;"></p>
+                <button class="next-btn" onclick="checkAlan()" style="background: #422006; color: white; padding: 12px 30px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold;">
+                    Next →
+                </button>   
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const listElement = document.getElementById('yellowList');
+        const inputElement = document.getElementById('nameInput');
+        const hintElement = document.getElementById('hintText');
+        
+        let failCount = 0;
+        const naggingTexts = [
+            "Forgetting something..?",
+            "Sure no one's missing?",
+            "Not gonna add me? 🥺",
+            "Still nothing? Wow. 💔",
+            "I'm literally right here.",
+            "Fine.. I'll do it myself 😭"
+        ];
+
+        window.onload = () => {
+            const savedNames = JSON.parse(localStorage.getItem('yellowPeople')) || ["The Sun", "Morning Coffee"];
+            savedNames.forEach(name => renderName(name));
+        };
+
+        function addName() {
+            const name = inputElement.value.trim();
+            if (name !== "") {
+                renderName(name);
+                saveToStorage();
+                inputElement.value = "";
+                hintElement.innerText = ""; // Clear hints if she adds someone
+            }
+        }
+
+        function renderName(name) {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${name}</span><button class="delete-btn" onclick="removeName(this)">🗑️</button>`;
+            listElement.appendChild(li);
+        }
+
+        function removeName(btn) {
+            btn.parentElement.remove();
+            saveToStorage();
+        }
+
+        function saveToStorage() {
+            const names = Array.from(document.querySelectorAll('#yellowList li span')).map(s => s.innerText);
+            localStorage.setItem('yellowPeople', JSON.stringify(names));
+        }
+
+        function checkAlan() {
+            const names = Array.from(document.querySelectorAll('#yellowList li span')).map(s => s.innerText.toLowerCase());
+            
+            // Check if "alan" is a substring of ANY name in the list
+            const isAlanPresent = names.some(name => name.includes("alan"));
+
+            if (isAlanPresent) {
+                goToNextPage();
+            } else {
+                if (failCount < naggingTexts.length - 1) {
+                    hintElement.innerText = naggingTexts[failCount];
+                    failCount++;
+                } else {
+                    // The final "Fine I'll do it myself"
+                    hintElement.innerText = naggingTexts[naggingTexts.length - 1];
+                    setTimeout(() => {
+                        renderName("Alan ❤️");
+                        saveToStorage();
+                        setTimeout(goToNextPage, 1500); // Navigate after she sees you added yourself
+                    }, 1000);
+                }
+            }
+        }
+
+        function goToNextPage() {
+            // For now, we'll just alert. We can build the second page next!
+            alert("Yay! Heading to the next surprise...");
+            window.location.href = "things.html"; 
+        }
+
+        function handleKey(e) { if (e.key === 'Enter') addName(); }
+    </script>
+</body>
+</html>
