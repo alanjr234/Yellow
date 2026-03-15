@@ -184,10 +184,12 @@
             localStorage.setItem('yellowPeople', JSON.stringify(names));
         }
 
+        let isProcessingAlan = false; // New flag to prevent double-adding
+
         function checkAlan() {
+            if (isProcessingAlan) return; // Exit if we are already in the middle of adding Alan
+
             const names = Array.from(document.querySelectorAll('#yellowList li span')).map(s => s.innerText.toLowerCase());
-            
-            // Check if "alan" is a substring of ANY name in the list
             const isAlanPresent = names.some(name => name.includes("alan"));
 
             if (isAlanPresent) {
@@ -197,12 +199,21 @@
                     hintElement.innerText = naggingTexts[failCount];
                     failCount++;
                 } else {
-                    // The final "Fine I'll do it myself"
+                    // Start the "do it myself" sequence
+                    isProcessingAlan = true; // Block further clicks
                     hintElement.innerText = naggingTexts[naggingTexts.length - 1];
+                    
                     setTimeout(() => {
-                        renderName("Alan ❤️");
-                        saveToStorage();
-                        setTimeout(goToNextPage, 1500); // Navigate after she sees you added yourself
+                        // Double check one last time before adding
+                        const finalCheck = Array.from(document.querySelectorAll('#yellowList li span')).map(s => s.innerText.toLowerCase());
+                        if (!finalCheck.some(name => name.includes("alan"))) {
+                            renderName("Alan ❤️");
+                            saveToStorage();
+                        }
+                        
+                        setTimeout(() => {
+                            goToNextPage();
+                        }, 1000); 
                     }, 1000);
                 }
             }
